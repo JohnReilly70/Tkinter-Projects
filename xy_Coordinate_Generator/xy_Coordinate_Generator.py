@@ -5,8 +5,7 @@ class App:
 
     def __init__(self, master):
         self._master = master
-        # keeps all matrix buttons together using the same 'button=' reference
-        # when initializing
+        # keeps all matrix buttons together using the same 'button=' reference when initializing
         self.btn_matrix = []
         self.listButtonsPressed = []  # keeps track of all the buttons pressed
 
@@ -23,12 +22,7 @@ class App:
                     root,
                     text=stringXY,
                     bg='white',
-                    command=lambda x=7 -
-                    matrixColumn,
-                    y=7 -
-                    matrixRow: self.updateChange(
-                        x,
-                        y))
+                    command=lambda x=7-matrixColumn, y=7-matrixRow: self.updateChange(x,y))
                 button.grid(row=matrixRow, column=matrixColumn)
 
                 row_matrix.append(button)
@@ -46,9 +40,14 @@ class App:
 
         clearButton.grid(row=(8), column=(2), pady=10)
 
-        exitButton = Button(root, text='Exit', bg='white',
+        exitButton = Button(root, text='Exit', bg='#ffffff',
                             command=self.windowClose)
         exitButton.grid(row=(8), column=(3), pady=10)
+
+
+        #character has to be a class variable as it will be called when the user presses print
+        self.character = Entry(master, borderwidth=1,width=1)
+        self.character.grid(row=(8), column=(0), pady=10)
 
     def updateChange(self, x, y):
         '''
@@ -64,7 +63,6 @@ class App:
             self.btn_matrix[7 - x][7 - y].configure(bg="#000000")
 
         elif xY in self.listButtonsPressed:
-            print(xY)
             self.listButtonsPressed.remove(xY)
             self.btn_matrix[7 - x][7 - y].configure(bg="#ffffff")
 
@@ -86,16 +84,22 @@ class App:
         if not (self.listButtonsPressed):
             print("List is Empty")
         else:
-            print(self.listButtonsPressed)
+            '''
+            -characterLength finds the X length of the character design and then adds 2
+            (1 for the spacing between characters and 1 for the correct length e.g 7-5=2 but actual length of character is 3)
+            -user must manually enter a character in the field in the bottom left corner or else output KEY will be left blank
+            -This allows for quick character creation and addition to the character library
+            '''
+            characterLength = (max(self.listButtonsPressed)[0])- (min(self.listButtonsPressed)[0]) + 2 
+            print("'{0}': {{'Properties': {{'CoOrd': {1}, 'CharLength': {2}}}}},".format(self.character.get(),self.listButtonsPressed,characterLength))
+
 
     def windowClear(self):
         '''
         -Removes all Co-Ordinates from listButtonsPressed
         -Changes all button colours to original colour
-
         *It loops through the list until empty as not to do so would not clear the list and left co-ordinates
         *User only required to press clear button once
-
         '''
         while len(self.listButtonsPressed) != 0:
             for point in self.listButtonsPressed:
@@ -103,6 +107,7 @@ class App:
                 self.btn_matrix[7 - x][7 - y].configure(bg="#ffffff")
                 self.listButtonsPressed.remove(point)
 
+        
 
 root = Tk()
 app = App(root)
